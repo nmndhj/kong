@@ -1,0 +1,777 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Kong own docker image로 설치</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="a5d5175c-19a7-422b-b9cb-f99e2418d55d" class="page sans"><header><h1 class="page-title">Kong own docker image로 설치</h1><p class="page-description"></p></header><div class="page-body"><p id="df918de4-5da8-40e4-b276-38aff77cfde4" class="">
+</p><p id="7edebe74-56e3-477e-b200-ddacfdaf27bb" class="">
+</p><p id="3033ced9-8d2d-4bdf-b0db-1ae22d9cff6e" class="">Docker Network 생성</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e187450d-8eba-4bd2-a83c-d2e3d313d643" class="code"><code class="language-JavaScript">docker network create kong-net</code></pre><p id="dddbb9aa-e4ad-4858-8e74-609862574d13" class="">
+</p><p id="36f9b9fd-fcf0-4f5f-a600-65617622d7bb" class="">DB 접근해보기</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b84269aa-b431-4462-8eee-d869b3399bc1" class="code"><code class="language-JavaScript">docker exec -it kong-database /bin/bash</code></pre><p id="73217a25-cfe1-45a6-b62c-96509ee0fd0d" class="">
+</p><p id="214c959a-c128-4d77-8c61-7e3f138adeb0" class="">Kong Docker 이미지 만들기 </p><p id="6db2d00f-9a4a-4966-888c-fee52789b2fe" class="">1) <a href="http://docker-entrypoint.sh">docker-entrypoint.sh</a> 다운 </p><p id="4418da68-800b-4835-8e3f-ab9761aa3837" class="">→ <a href="https://raw.githubusercontent.com/Kong/docker-kong/master/docker-entrypoint.sh">https://raw.githubusercontent.com/Kong/docker-kong/master/docker-entrypoint.sh</a></p><p id="69edea00-290e-4fdc-a092-e413187e4bac" class="">
+</p><p id="0e47c43e-aa89-4352-9bb5-a015ec0226d8" class="">해당 파일 권한 변경 </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="745f814f-c4f9-49c7-88fa-5e30b67d9e89" class="code"><code class="language-JavaScript">chmod +x docker-entrypoint.sh</code></pre><p id="fba28bed-8b3e-45f3-bc6c-ea3b789d67f5" class="">
+</p><p id="3fac9999-1c36-48c1-8ce9-91d4bc931e7c" class="">2) Gateway package 다운</p><p id="79e81e77-e85c-4c81-8690-8f13ebda4c4e" class="">→ <a href="https://packages.konghq.com/public/gateway-36/rpm/el/8/x86_64/kong-enterprise-edition-3.6.1.3.el8.x86_64.rpm">https://packages.konghq.com/public/gateway-36/rpm/el/8/x86_64/kong-enterprise-edition-3.6.1.3.el8.x86_64.rpm</a></p><p id="cf6deb38-f009-4388-9193-35edce617c1d" class="">
+</p><p id="ba2db56f-d11c-49e4-9793-d8f0350c1e80" class="">3) Dockerfile 생성</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="034510fd-5b93-4eb7-b577-739fc980d229" class="code"><code class="language-Shell">
+FROM registry.access.redhat.com/ubi8/ubi:8.1
+  
+COPY kong.rpm /tmp/kong.rpm
+  
+RUN set -ex; \
+   yum install -y /tmp/kong.rpm \
+   &amp;&amp; rm /tmp/kong.rpm \
+   &amp;&amp; chown kong:0 /usr/local/bin/kong \
+   &amp;&amp; chown -R kong:0 /usr/local/kong \
+   &amp;&amp; ln -s /usr/local/openresty/luajit/bin/luajit /usr/local/bin/luajit \
+   &amp;&amp; ln -s /usr/local/openresty/luajit/bin/luajit /usr/local/bin/lua \
+   &amp;&amp; ln -s /usr/local/openresty/nginx/sbin/nginx /usr/local/bin/nginx \
+   &amp;&amp; kong version
+  
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+  
+USER kong
+  
+ENTRYPOINT [&quot;/docker-entrypoint.sh&quot;]
+  
+EXPOSE 8000 8443 8001 8444 8002 8445 8003 8446 8004 8447
+  
+STOPSIGNAL SIGQUIT
+  
+HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD kong health
+  
+CMD [&quot;kong&quot;, &quot;docker-start&quot;]</code></pre><p id="d89e638f-0d0c-4d18-9d25-01a58adf3763" class="">4) Docker 이미지 빌드</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b48683ab-e2bc-46a2-94ab-207ce0815978" class="code"><code class="language-Shell"> docker build --platform linux/amd64 --no-cache -t kong-image .</code></pre><p id="f3e929de-e576-4f98-a055-ad6e500e8d72" class="">5) 이미지가 재대로 생성 되었는지 확인 (kong 버전을 확인) </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="42208f8c-20c7-4c48-a89a-c0df4fe3853b" class="code"><code class="language-Shell"> docker run -it --rm kong-image kong version</code></pre><p id="3be23929-c5c2-4f2d-a0ff-7ee032588e32" class="">
+</p><p id="9312e1f2-c340-45e0-af57-f29f9a9fad44" class="">Kong 버전에 맞춰서 Postgres Database Setup </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0a66b982-8997-4b6e-97ad-d9f2f2022622" class="code"><code class="language-JavaScript">docker run --rm \
+     --network=kong-net \
+     -e &quot;KONG_DATABASE=postgres&quot; \
+     -e &quot;KONG_PG_HOST=kong-database&quot; \
+     -e &quot;KONG_PG_USER=kong&quot; \
+     -e &quot;KONG_PG_PASSWORD=kong&quot; \
+     kong-image:latest kong migrations bootstrap</code></pre><p id="b5317221-237f-4142-9314-4945dd692c52" class="">→ 버전이 다르거나 migration 시도 후 재시도할 경우, migrations up , migrations finish 명령어로 재 동기화 해야함</p><p id="c28abf73-3231-49cd-9aa5-83d726c0efb0" class="">
+</p><p id="27c41ed2-84ae-412a-b9c9-bf7b65236532" class="">Kong 설치 : 기존에 만든 Docker image로 띄우기</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bd8e2853-9e6b-487d-816f-f76f6d04b76e" class="code"><code class="language-JavaScript">docker run -d --name kong-gateway \
+ --network=kong-net \
+ -e &quot;KONG_DATABASE=postgres&quot; \
+ -e &quot;KONG_PG_HOST=kong-database&quot; \
+ -e &quot;KONG_PG_USER=kong&quot; \
+ -e &quot;KONG_PG_PASSWORD=kong&quot; \
+ -e &quot;KONG_PROXY_ACCESS_LOG=/dev/stdout&quot; \
+ -e &quot;KONG_ADMIN_ACCESS_LOG=/dev/stdout&quot; \
+ -e &quot;KONG_PROXY_ERROR_LOG=/dev/stderr&quot; \
+ -e &quot;KONG_ADMIN_ERROR_LOG=/dev/stderr&quot; \
+ -e &quot;KONG_ADMIN_LISTEN=0.0.0.0:8001&quot; \
+ -e &quot;KONG_ADMIN_GUI_URL=http://localhost:8002&quot; \
+ -e KONG_LICENSE_DATA \
+ -p 8000:8000 \
+ -p 8443:8443 \
+ -p 8001:8001 \
+ -p 8444:8444 \
+ -p 8002:8002 \
+ -p 8445:8445 \
+ -p 8003:8003 \
+ -p 8004:8004 \
+ kong-image:latest</code></pre><ul id="374f9308-1b18-4689-834a-bcd6f0ca52ae" class="bulleted-list"><li style="list-style-type:disc">KONG_DATABASE : 연결하고자 하는 Database type</li></ul><ul id="86eede92-08ce-4d6e-a345-f461982ecbd7" class="bulleted-list"><li style="list-style-type:disc">KONG_PG_HOST : posgres 컨테이너 네임 </li></ul><ul id="5ca921ae-8e12-405d-982f-868a785741eb" class="bulleted-list"><li style="list-style-type:disc">KONG_PG_PASSWORD : DB 접속 비밀번호 </li></ul><ul id="4a450875-6f38-4d8d-b831-e9708af1b473" class="bulleted-list"><li style="list-style-type:disc">&#x27;--rm&#x27;: 이는 docker를 1회만 수행하고, 컨테이너를 삭제하라는 의미이다.</li></ul><ul id="19b63a23-83f0-4b4c-bae0-e1eaa40a9568" class="bulleted-list"><li style="list-style-type:disc">&#x27;--network=kong-net&#x27;: 데이터베이스가 수행되는 네트워크를 지정한다.</li></ul><ul id="63e500a5-9295-49c3-97bc-e95e65c90261" class="bulleted-list"><li style="list-style-type:disc">&#x27;-e&#x27;: 환경 변수를 설정한다.<ul id="5bc4af47-2356-4fb5-97be-20ee163c6a0f" class="bulleted-list"><li style="list-style-type:circle">&#x27;KONG_DATABASE=postgres&#x27;: 데이터베이스로 postgres 를 이용한다.</li></ul><ul id="84ee11af-d41a-43dd-a458-d8baa2f62ec2" class="bulleted-list"><li style="list-style-type:circle">&#x27;KONG_PG_HOST=kong-database&#x27;: postgres 데이터베이스의 이름을 지정한다. kong-database 라고 지정했다.</li></ul><ul id="80d69c47-703d-4572-9bbe-7cb9cc1abc62" class="bulleted-list"><li style="list-style-type:circle">&#x27;KONG_PG_USER=kong&#x27;: 사용자 이름 kong</li></ul><ul id="7c9bad63-bb4a-4d6f-8a0a-7f8f6e374e19" class="bulleted-list"><li style="list-style-type:circle">&#x27;KONG_PG_PASSWORD=kong&#x27;: 사용자 비밀번호</li></ul><ul id="5f84e00e-1e42-4043-9199-75f2a619cde8" class="bulleted-list"><li style="list-style-type:circle">&#x27;KONG_CASSANDRA_CONTACT_POINTS=kong-database&#x27;: 카산드라용 환경 변수이다.</li></ul></li></ul><ul id="b397db11-d3c5-41d9-bbe6-c3d621e7481d" class="bulleted-list"><li style="list-style-type:disc">kong:latest: kong 버젼을 지정했다. 최신 버젼이 사용된다.</li></ul><ul id="20e87eb0-f2a0-44aa-9022-d7f5b94001a7" class="bulleted-list"><li style="list-style-type:disc">kong migrations bootstrap: 컨테이너가 실행되면서 사용될 커맨드를 지정한다. migrations bootstrap 는 신규 데이터베이스에 필요한 데이터와 테이블을 생성한다.</li></ul><p id="7e0fc93c-7140-4d2f-9b0c-b1b7a8325923" class="">
+</p><p id="b456e380-e5d5-49a0-845e-553b3b43e58b" class="">잘 띄워졌는지 확인 : </p><p id="fe816e8a-0e29-4dbd-ae51-fa07a07efbaf" class=""><strong>→ admin api 정보 확인 </strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="393f4c9a-5c1d-4757-8cba-c2c1af06b1b3" class="code"><code class="language-JavaScript">curl -i http://localhost:8001/</code></pre><p id="33216794-08cb-4013-9292-83c6375774f3" class="">
+</p><p id="6ff2820c-b78f-4f54-975b-fc058b07720d" class=""><strong>kong port 정보</strong></p><hr id="afc911a7-2d68-464b-9967-e0fe703a67e8"/><p id="838de799-c753-406c-b28b-737648e2eb87" class="">kong 은 몇가지 endpoint를 위한 port를 제공한다.</p><ul id="8b9f84d2-9b0a-4902-9de8-44e36d163c15" class="bulleted-list"><li style="list-style-type:disc">:8000<ul id="4865b98b-5094-4ad1-a025-4be26258aeab" class="bulleted-list"><li style="list-style-type:circle">Kong 는 HTTP 요청을 리슨한다. 그리고 서비스로 업스트림을 수행한다.</li></ul></li></ul><ul id="0cd81f24-1d62-481d-b8be-89360ebdb25b" class="bulleted-list"><li style="list-style-type:disc">:8443<ul id="62c270db-9c71-42ea-9c44-b1c76c5f2d6d" class="bulleted-list"><li style="list-style-type:circle">HTTPS에 대한 리슨을 수행한다. 이는 :8000과 유사하다.</li></ul><ul id="44c3ad86-1d67-4a3b-a56a-226703682c63" class="bulleted-list"><li style="list-style-type:circle">HTTPS만 오직 받아 들인다. 이는 설정에서 off시킬 수 있다.</li></ul></li></ul><ul id="b36392f3-1f72-47f6-8803-c5c84cf7ccf9" class="bulleted-list"><li style="list-style-type:disc">:8001<ul id="dc250027-adfd-42f5-bf15-36f6470e022e" class="bulleted-list"><li style="list-style-type:circle">Admin API를 위해서 리슨한다.</li></ul></li></ul><ul id="ae5fc2aa-5f1e-4118-92e7-e9baa0862b24" class="bulleted-list"><li style="list-style-type:disc">:8444<ul id="4dcbfce7-2dd4-4cb0-b4dd-38c8580ea55c" class="bulleted-list"><li style="list-style-type:circle">Admin API를 HTTPS로 리슨한다.</li></ul><p id="bc63ce3d-8730-452e-b24a-037311200f40" class="">
+</p></li></ul><hr id="e522165b-c57a-40a6-a032-ea460d84204d"/><p id="3fd8a55f-b765-414c-85a6-7fdc1ba52233" class=""><strong>Kong 서비스 등록하기</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea6fcc3-9967-47e6-9ad4-9b403fe3c199" class="code"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">curl -i -X POST \
+  --url http://localhost:8001/services/ \
+  --data &#x27;name=my-service&#x27; \
+  --data &#x27;url=https://www.naver.com&#x27;
+
+HTTP/1.1 201 Created
+Date: Fri, 14 May 2021 02:34:02 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Content-Length: 360
+X-Kong-Admin-Latency: 40
+Server: kong/2.4.0
+
+{
+   &quot;connect_timeout&quot;:60000,
+   &quot;read_timeout&quot;:60000,
+   &quot;write_timeout&quot;:60000,
+   &quot;host&quot;:&quot;www.naver.com&quot;,
+   &quot;tls_verify_depth&quot;:null,
+   &quot;retries&quot;:5,
+   &quot;created_at&quot;:1620959642,
+   &quot;updated_at&quot;:1620959642,
+   &quot;tags&quot;:null,
+   &quot;id&quot;:&quot;66e4caa8-0b07-48b5-8ebe-55aab98b789d&quot;,
+   &quot;port&quot;:443,
+   &quot;name&quot;:&quot;my-service&quot;,
+   &quot;client_certificate&quot;:null,
+   &quot;protocol&quot;:&quot;https&quot;,
+   &quot;tls_verify&quot;:null,
+   &quot;ca_certificates&quot;:null,
+   &quot;path&quot;:null
+}</code></pre><ul id="2ec4c2aa-e41a-41db-9ef1-01bd336609b9" class="bulleted-list"><li style="list-style-type:disc">connect_timeout: 연결 타임아웃, 60000 으로 60초로 잡혔다.</li></ul><ul id="63df3ceb-c37d-4eeb-a820-376466dafa55" class="bulleted-list"><li style="list-style-type:disc">read_timeout: 읽기 타임아웃, 60000 으로 60초로 잡혔다.</li></ul><ul id="fcbae124-80ab-4e3c-9a09-ae4f14fe130c" class="bulleted-list"><li style="list-style-type:disc">write_timeout: 쓰기 타임아웃, 60000 으로 60초로 잡혔다.</li></ul><ul id="13444914-5e83-4023-963a-8330ea5914e5" class="bulleted-list"><li style="list-style-type:disc">host: 서비스 대상 호스트이다.</li></ul><ul id="898160a8-6dbc-435a-ade5-816ca9f35942" class="bulleted-list"><li style="list-style-type:disc">tls_verify_depth: 업스트림 서버의 TLS 인증서를 확인하는 동안 최대 체인 깊이, 기본값은 널이다.</li></ul><ul id="c4f54ffc-fc5b-43a3-8457-b48749e193b1" class="bulleted-list"><li style="list-style-type:disc">retries: 서비스가 응답하지 않을때 재시도 횟수</li></ul><ul id="0d38849b-bf0f-48dc-aae9-3fed98d2ac13" class="bulleted-list"><li style="list-style-type:disc">created_at, updated_at: 생성일시</li></ul><ul id="4d58f115-629f-44ec-80d7-150edb094837" class="bulleted-list"><li style="list-style-type:disc">tags: 그룹화 및 필터링을 위해 서비스와 연관된 선택적 문자열 셋</li></ul><ul id="bcf76a6c-20bc-4b0f-9e6f-317c47eae039" class="bulleted-list"><li style="list-style-type:disc">id: 서비스 아이디</li></ul><ul id="2b42a05c-27a8-4065-81db-087a77099af9" class="bulleted-list"><li style="list-style-type:disc">port: 서비스 포트 연결 대상 호스트에 접속할 포트이다.</li></ul><ul id="2ac753ce-22da-4215-9ae5-fa353a91e81d" class="bulleted-list"><li style="list-style-type:disc">name: 서비스 이름, 서비스 이름을 통해서 라우팅 된다.</li></ul><ul id="b01e1b3d-9257-47c1-b778-913ebee29c86" class="bulleted-list"><li style="list-style-type:disc">client_certificate: TLS가 업스트림 서버로 핸드 셰이 킹하는 동안 클라이언트 인증서로 사용할 인증서.</li></ul><ul id="79f22b3f-2e0e-4c62-91a3-2c68b1922a1c" class="bulleted-list"><li style="list-style-type:disc">protocol: 서비스 대상 프로토콜 (http, https) 등이 설정된다.</li></ul><ul id="2cc3f6a3-a622-4967-babf-49652f97f7b0" class="bulleted-list"><li style="list-style-type:disc">tls_verify: TLS 인증서 활성화 여부</li></ul><ul id="16b3295e-9166-4df7-9652-64c240263154" class="bulleted-list"><li style="list-style-type:disc">ca_certificates: 업스트림 서버의 TLS 인증서를 확인하는 동안 신뢰 저장소를 구축하는 데 사용되는 CA 인증서 개체 UUID의 배열</li></ul><ul id="13fb1cdc-9168-4921-820e-ca68adc64e5b" class="bulleted-list"><li style="list-style-type:disc">path: 서비스 대상의 uri 패스를 지정할 수 있다.</li></ul><p id="bcfe5191-b40f-4a3f-b84b-5a59896b6f08" class="">
+</p><hr id="fb3f0a1c-cdbd-469e-a11b-69fc4238ce43"/><p id="b49b2ef1-cb9a-474e-912a-c9fdb4ee5861" class="">Admin 활성화는 아래와 같이 명령어로 킬 수 있음</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="38ebeee2-7e5d-41ee-b67c-e4ced6f63548" class="code"><code class="language-JavaScript">curl -X PATCH http://localhost:8001/workspaces/default   --data &quot;config.portal=true&quot;</code></pre><ul id="0c86d8d1-f426-4c0d-b0a4-4711b8f63c44" class="bulleted-list"><li style="list-style-type:disc">This will expose the <strong>default Dev Portal</strong> at <a href="http://localhost:8003/default">http://localhost:8003/default</a></li></ul><ul id="6283456d-608c-46b1-9aba-d96c2a4d0a88" class="bulleted-list"><li style="list-style-type:disc">The <strong>Dev Portal Files endpoint</strong> can be accessed at <code>:8001/files</code></li></ul><ul id="5336f3cb-0b47-4276-b374-3d08d155573c" class="bulleted-list"><li style="list-style-type:disc">The <strong>Public Dev Portal Files API</strong> can be accessed at <code>:8004/files</code></li></ul><p id="603b36bc-9763-4900-8341-64d9e43af9de" class="">
+</p><p id="469d1236-6a37-4eb3-bc3a-aaa2dc678aa8" class="">라이선스가 유효해야 적용 가능</p><p id="801b3272-b0f3-4fe2-bc72-1e57c98a74f0" class="">→ {&quot;message&quot;:&quot;Enterprise license missing or expired&quot;}%</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
